@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 @Service
 @RequiredArgsConstructor
 public class Boltabay_Zhaniya_TaskService {
+
     private static final Logger logger =
             LoggerFactory.getLogger(Boltabay_Zhaniya_TaskService.class);
 
