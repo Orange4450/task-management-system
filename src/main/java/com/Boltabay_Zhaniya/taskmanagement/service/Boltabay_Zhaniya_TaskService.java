@@ -1,0 +1,59 @@
+package com.Boltabay_Zhaniya.taskmanagement.service;
+import com.Boltabay_Zhaniya.taskmanagement.dto.Boltabay_Zhaniya_TaskRequestDto;
+import com.Boltabay_Zhaniya.taskmanagement.dto.Boltabay_Zhaniya_TaskResponseDto;
+import com.Boltabay_Zhaniya.taskmanagement.entity.Boltabay_Zhaniya_Task;
+import com.Boltabay_Zhaniya.taskmanagement.exception.Boltabay_Zhaniya_ResourceNotFoundException;
+import com.Boltabay_Zhaniya.taskmanagement.mapper.Boltabay_Zhaniya_TaskMapper;
+import com.Boltabay_Zhaniya.taskmanagement.repository.Boltabay_Zhaniya_TaskRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class Boltabay_Zhaniya_TaskService {
+
+    private final Boltabay_Zhaniya_TaskRepository repository;
+    private final Boltabay_Zhaniya_TaskMapper mapper;
+
+    public Boltabay_Zhaniya_TaskResponseDto create(Boltabay_Zhaniya_TaskRequestDto dto) {
+
+        Boltabay_Zhaniya_Task task = mapper.toEntity(dto);
+
+        return mapper.toDto(repository.save(task));
+    }
+
+    public Page<Boltabay_Zhaniya_TaskResponseDto> getAll(int page,
+                                                         int size,
+                                                         String sortBy,
+                                                         String keyword) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+        Page<Boltabay_Zhaniya_Task> tasks;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            tasks = repository.findByTitleContainingIgnoreCase(keyword, pageable);
+        } else {
+            tasks = repository.findAll(pageable);
+        }
+
+        return tasks.map(mapper::toDto);
+    }
+
+    public Boltabay_Zhaniya_TaskResponseDto getById(Long id) {
+
+        Boltabay_Zhaniya_Task task = repository.findById(id)
+                .orElseThrow(() -> new Boltabay_Zhaniya_ResourceNotFoundException("Task not found"));
+
+        return mapper.toDto(task);
+    }
+
+    public void delete(Long id) {
+
+        repository.deleteById(id);
+    }
+}
