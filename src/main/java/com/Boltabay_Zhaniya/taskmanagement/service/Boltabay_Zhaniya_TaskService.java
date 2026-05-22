@@ -11,10 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
 public class Boltabay_Zhaniya_TaskService {
+    private static final Logger logger =
+            LoggerFactory.getLogger(Boltabay_Zhaniya_TaskService.class);
 
     private final Boltabay_Zhaniya_TaskRepository repository;
     private final Boltabay_Zhaniya_TaskMapper mapper;
